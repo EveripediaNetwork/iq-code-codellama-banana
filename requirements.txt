@@ -2,3 +2,5 @@ potassium
 torch
 transformers
 accelerate
+optimum
+auto-gptq

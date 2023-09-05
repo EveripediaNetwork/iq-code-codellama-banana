@@ -9,11 +9,13 @@ def download_model():
         "TheBloke/CodeLlama-34B-GPTQ",
         use_cache="cache"
     )
-    model = AutoModelForCausalLM.from_pretrained(
+    model = AutoGPTQForCausalLM.from_quantized(
         "TheBloke/CodeLlama-34B-GPTQ",
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True,
-        use_cache="cache"
+        use_safetensors=True,
+        trust_remote_code=False,
+        device="cuda:0",
+        use_triton=use_triton,
+        quantize_config=None
     )
 
 if __name__ == "__main__":

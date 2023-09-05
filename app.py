@@ -8,15 +8,17 @@ app = Potassium("my_app")
 @app.init
 def init():
     tokenizer = AutoTokenizer.from_pretrained(
-        "daryl149/Llama-2-7b-chat-hf",
+        "TheBloke/CodeLlama-34B-GPTQ",
         use_cache="cache"
     )
-    model = AutoModelForCausalLM.from_pretrained(
-        "daryl149/Llama-2-7b-chat-hf",
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True,
-        use_cache="cache"
-    ).to("cuda")
+    model = AutoGPTQForCausalLM.from_quantized(
+        "TheBloke/CodeLlama-34B-GPTQ",
+        use_safetensors=True,
+        trust_remote_code=False,
+        device="cuda:0",
+        use_triton=use_triton,
+        quantize_config=None
+    )
     context = {
         "model": model,
         "tokenizer": tokenizer
