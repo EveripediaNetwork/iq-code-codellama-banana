@@ -16,7 +16,7 @@ def download_model():
         device="cuda:0",
         use_triton=False,
         quantize_config=None
-    ).to("cuda")
+    )
 
 if __name__ == "__main__":
     download_model()
