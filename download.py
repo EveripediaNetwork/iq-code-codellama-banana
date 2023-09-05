@@ -11,12 +11,8 @@ def download_model():
     )
     model =  AutoModelForCausalLM.from_pretrained(
         "Phind/Phind-CodeLlama-34B-v2",
-        use_safetensors=True,
-        trust_remote_code=False,
-        device="cuda:0",
-        use_triton=False,
-        quantize_config=None
-    )
+        device_map="auto"
+    ).to("cuda")
 
 if __name__ == "__main__":
     download_model()
