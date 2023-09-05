@@ -1,20 +1,15 @@
 from potassium import Potassium, Request, Response
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, LlamaForCausalLM
 
 app = Potassium("my_app")
 
 # @app.init runs at startup, and loads models into the app's context
 @app.init
 def init():
-    tokenizer = AutoTokenizer.from_pretrained(
-        "Phind/Phind-CodeLlama-34B-v2",
-        use_cache="cache"
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        "Phind/Phind-CodeLlama-34B-v2",
-        device_map="auto"
-    ).to("cuda")
+    model_path = "Phind/Phind-CodeLlama-34B-v2"
+    model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto").to("cuda")
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
     context = {
         "model": model,
         "tokenizer": tokenizer
