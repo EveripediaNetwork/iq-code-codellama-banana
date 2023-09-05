@@ -8,7 +8,7 @@ app = Potassium("my_app")
 @app.init
 def init():
     model_path = "Phind/Phind-CodeLlama-34B-v2"
-    model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto").to("cuda")
+    model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto")
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     context = {
         "model": model,
