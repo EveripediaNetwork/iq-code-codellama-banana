@@ -17,7 +17,7 @@ def init():
         use_safetensors=True,
         trust_remote_code=False,
         device="cuda:0",
-        use_triton=use_triton,
+        use_triton=False,
         quantize_config=None
     )
     context = {
