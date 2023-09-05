@@ -1,4 +1,4 @@
-# Potassium Llama V2 7B chat
+# Potassium Codellama 34b GPTQ
 
 This is a Potassium HTTP server, created with `banana init` CLI. Based on the model: [meta-llama/Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf).
 
