@@ -1,6 +1,7 @@
 from potassium import Potassium, Request, Response
 import torch
-from transformers import AutoTokenizer, AutoGPTQForCausalLM
+from transformers import AutoTokenizer
+from auto_gptq import AutoGPTQForCausalLM
 
 app = Potassium("my_app")
 
