@@ -1,7 +1,6 @@
 from potassium import Potassium, Request, Response
 import torch
-from transformers import AutoTokenizer
-from auto_gptq import AutoGPTQForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 app = Potassium("my_app")
 
@@ -9,11 +8,11 @@ app = Potassium("my_app")
 @app.init
 def init():
     tokenizer = AutoTokenizer.from_pretrained(
-        "TheBloke/CodeLlama-34B-GPTQ",
+        "Phind/Phind-CodeLlama-34B-v2",
         use_cache="cache"
     )
-    model = AutoGPTQForCausalLM.from_quantized(
-        "TheBloke/CodeLlama-34B-GPTQ",
+    model = AutoModelForCausalLM.from_quantized(
+        "Phind/Phind-CodeLlama-34B-v2",
         use_safetensors=True,
         trust_remote_code=False,
         device="cuda:0",
