@@ -1,7 +1,7 @@
 # This file runs during container build time to get model weights built into the container
 
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoGPTQForCausalLM
 
 def download_model():
     # do a dry run of loading the huggingface model, which will download weights
