@@ -30,12 +30,14 @@ def init():
 @app.handler("/")
 def handler(context: dict, request: Request) -> Response:
     prompt = request.json.get("prompt")
+    max_new_tokens = request.json.get("max_new_tokens", 512)
+    temperature = request.json.get("temperature", 0)
 
     tokenizer = context.get("tokenizer")
     model = context.get("model")
 
-    inputs = tokenizer.encode(prompt, return_tensors="pt").to("cuda")
-    outputs = model.generate(inputs)
+    input_ids = tokenizer.encode(prompt, return_tensors="pt").to("cuda")
+    outputs = model.generate(inputs=input_ids, temperature=temperature, max_new_tokens=max_new_tokens)
     output = tokenizer.decode(outputs[0])
 
     return Response(
