@@ -1,39 +1,42 @@
 from potassium import Potassium, Request, Response
-import torch
-from transformers import AutoTokenizer, LlamaForCausalLM
+from transformers import AutoTokenizer
+from auto_gptq import AutoGPTQForCausalLM
 
-app = Potassium("my_app")
+MODEL_NAME_OR_PATH = "TheBloke/CodeLlama-34B-GPTQ"
+DEVICE = "cuda:0"
 
-# @app.init runs at startup, and loads models into the app's context
+app = Potassium("CodeLlama-34B-GPTQ")
+
 @app.init
-def init():
-    model_path = "Phind/Phind-CodeLlama-34B-v2"
-    model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto")
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    context = {
+def init() -> dict:
+    """Initialize the application with the model and tokenizer."""
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME_OR_PATH, use_fast=True)
+
+    model = AutoGPTQForCausalLM.from_quantized(MODEL_NAME_OR_PATH,
+            use_safetensors=True,
+            trust_remote_code=False,
+            device="cuda:0",
+            use_triton=False,
+            quantize_config=None,
+            inject_fused_attention=False)
+
+    return {
         "model": model,
         "tokenizer": tokenizer
     }
-    return context
-
-# @app.handler runs for every call
-@app.handler("/")
+    
+@app.handler()
 def handler(context: dict, request: Request) -> Response:
-    prompt = request.json.get("prompt")
-    max_new_tokens = request.json.get("max_new_tokens", 512)
-    temperature = request.json.get("temperature", 0)
-
-    tokenizer = context.get("tokenizer")
+    """Handle a request to generate text from a prompt."""
     model = context.get("model")
-
-    input_ids = tokenizer.encode(prompt, return_tensors="pt").to("cuda")
-    outputs = model.generate(inputs=input_ids, temperature=temperature, max_new_tokens=max_new_tokens)
-    output = tokenizer.decode(outputs[0])
-
-    return Response(
-        json = {"outputs": output}, 
-        status=200
-    )
+    tokenizer = context.get("tokenizer")
+    max_new_tokens = request.json.get("max_new_tokens", 512)
+    temperature = request.json.get("temperature", 0.7)
+    prompt = request.json.get("prompt")
+    input_ids = tokenizer(prompt, return_tensors='pt').input_ids.cuda()
+    output = model.generate(inputs=input_ids, temperature=temperature, max_new_tokens=max_new_tokens)
+    result = tokenizer.decode(output[0])
+    return Response(json={"outputs": result}, status=200)
 
 if __name__ == "__main__":
     app.serve()
